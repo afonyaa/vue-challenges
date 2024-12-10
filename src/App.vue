@@ -1,21 +1,25 @@
 <script setup>
-import { ref } from 'vue';
-const colors = ["blue", "yellow", "red", "green"]
 
-const theme = ref("red")
-
-setInterval(() => {
-  theme.value = colors[Math.floor(Math.random() * 4)]
-}, 1000)
 
 </script>
 
 <template>
-  <p :style="{color: theme}">{{ theme }}</p>
+   <p>Hello Vue.js</p>
 </template>
 
 <style scoped>
 p {
-  color: v-bind(theme)
+  font-size:20px;
+  color:red;
+  text-align: center;
+  line-height: 50px;
 }
+
+/* Make it work */
+:global(body) {
+  width: 100vw;
+  height: 100vh;
+  background-color: burlywood;
+}
+
 </style>
