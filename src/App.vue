@@ -1,32 +1,22 @@
 <script setup lang="ts">
-import { ref, Ref, reactive, isRef, toValue, toRefs } from "vue"
+import { ref, computed } from "vue"
 
-function useCount() {
-  const state = reactive({
-    count: 0,
-  })
-
-  function update(value: number) {
-    state.count = value
+const count = ref(1)
+const plusOne = computed(
+  {
+    get: () => count.value + 1,
+    set: () => {
+      count.value++
+    }
   }
+)
 
-  return {
-    ...toRefs(state),
-    update,
-  }
-}
-
-// Ensure the destructured properties don't lose their reactivity
-const { count , update } = useCount()
+plusOne.value = plusOne.value + 1
 
 </script>
 
 <template>
   <div>
-    <p>
-      <span @click="update(count-1)">-</span>
-      {{ count }}
-      <span @click="update(count+1)">+</span>
-    </p>
+    {{ plusOne }}
   </div>
 </template>
