@@ -1,60 +1,28 @@
 <script setup lang="ts">
-import { ref, Ref, reactive, isRef, toValue, toRef } from "vue"
+import { ref, Ref, reactive, isRef, toValue, toRefs } from "vue"
 
-const initial = ref(10)
-const count = ref(0)
+function useCount() {
+  const state = reactive({
+    count: 0,
+  })
 
-// Challenge 1: Update ref
-function update(value) {
-    count.value = value
+  function update(value: number) {
+    state.count = value
+  }
+
+  return {
+    ...toRefs(state),
+    update,
+  }
 }
 
-/**
- * Challenge 2: Checks if `count` is a ref object.
- * Make the output to be 1
-*/
-console.log(
-  isRef(count) ? 1 : 0
-)
-
-/**
- * Challenge 3: Unwrap ref
- * Make the output to be true
-*/
-function initialCount(value: number | Ref<number>) {
-  // Make the output to be true
-  console.log(toValue(value) === 10)
-}
-
-initialCount(initial)
-
-/**
- * Challenge 4:
- * create a ref for a property on a source reactive object.
- * The created ref is synced with its source property:
- * mutating the source property will update the ref, and vice-versa.
- * Make the output to be true
-*/
-const state = reactive({
-  foo: 1,
-  bar: 2,
-})
-const fooRef = ref(toRef(state, 'foo')) // change the impl...
-
-
-// mutating the ref updates the original
-fooRef.value++
-console.log(state.foo === 2)
-
-// mutating the original also updates the ref
-state.foo++
-console.log(fooRef.value === 3)
+// Ensure the destructured properties don't lose their reactivity
+const { count , update } = useCount()
 
 </script>
 
 <template>
   <div>
-    <h1>msg</h1>
     <p>
       <span @click="update(count-1)">-</span>
       {{ count }}
