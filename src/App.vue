@@ -1,32 +1,38 @@
 <script setup>
 import { ref, watchEffect, onUnmounted, onMounted } from 'vue';
 
-function useLocalStorage(key, initialValue) {
-  const count = ref(Number(localStorage.getItem(key)) || initialValue)
+const useEventListener = (target, event, callback) => {
+    onMounted(() => {
+        target.addEventListener(event, callback)
+    })
 
-  watchEffect(() => {
-    localStorage.setItem(key, count.value)
-  })
-
-  return count
+    onUnmounted(() => {
+        target.removeEventListener(event, callback)
+    })
 }
 
-const counter = useLocalStorage("counter", 0)
+const useMouse = () => {
+    const x = ref(0)
+    const y = ref(0)
 
-// We can get the localStorage by triggering the getter:
-console.log(counter.value)
+    const callback = (e) => {
+        y.value = e.clientY
+        x.value = e.clientX
+    }
 
-// And we also can set the localStorage by triggering the setter:
+    useEventListener(window, 'mousemove', callback)
 
-counter.value+=1
+    return {x, y}
 
-console.log(counter.value)
+}
 
+const {x, y} = useMouse()
 
 </script>
 
 <template>
-
+{{ x }}
+{{ y }}
 </template>
 
 <style scoped>
