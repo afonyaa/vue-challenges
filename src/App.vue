@@ -1,49 +1,32 @@
 <script setup>
 import { ref, watchEffect, onUnmounted, onMounted } from 'vue';
 
-const useCounter = (initialValue, options) => {
-    const count = ref(initialValue)
-    
-    const dec = () => {
-        if (count.value > options.min) {
-            count.value--
-        }
-    }
+function useLocalStorage(key, initialValue) {
+  const count = ref(Number(localStorage.getItem(key)) || initialValue)
 
-    const inc = () => {
-        if (count.value < options.max) {
-            console.log('inc')
-            count.value++
-        }
-    }
-    
-    const reset = () => {
-        count.value = initialValue
-    }
+  watchEffect(() => {
+    localStorage.setItem(key, count.value)
+  })
 
-    return {
-        inc, dec, reset, count
-    }
+  return count
 }
 
-const { count, inc, dec, reset } = useCounter(0, { min: 0, max: 10 })
+const counter = useLocalStorage("counter", 0)
+
+// We can get the localStorage by triggering the getter:
+console.log(counter.value)
+
+// And we also can set the localStorage by triggering the setter:
+
+counter.value+=1
+
+console.log(counter.value)
 
 
 </script>
 
 <template>
-    <button @click="dec">
-        -
-    </button>
-    <div>
-        {{count}}
-    </div>
-    <button @click="inc">
-        +
-    </button>
-    <button @click="reset">
-        reset
-    </button>
+
 </template>
 
 <style scoped>
