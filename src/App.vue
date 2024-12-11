@@ -1,32 +1,31 @@
-<script setup lang="ts">
-import { ref, computed, watch, watchEffect, effectScope } from "vue"
+<script setup>
+import { watch, customRef } from "vue"
 
-const scope = effectScope()
+function useDebouncedRef(factory, delay) {
+  let localValue = factory
+  let timeout
+  return customRef((track, trigger) => ({
+    get() {
+      track()
+      return localValue
+    },
+    set(value) {
+      localValue = value
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        trigger()
+      }, delay)
+    }
+  }))
+}
+const text = useDebouncedRef("hello", 2000)
 
-const counter = ref(1)
-const doubled = computed(() => counter.value * 2)
-
-// use the `effectScope` API to make these effects stop together after being triggered once
-
-scope.run(() => {
-  watch(doubled, () => console.log('watch',doubled.value))
-  watchEffect(() => console.log('watch effect', doubled.value))
+watch(text, (value) => {
+  console.log(value)
 })
-
-counter.value = 2
-
-setTimeout(() => {
-  scope.stop()
-  counter.value = 4
-})
-
 
 </script>
 
 <template>
-   <div>
-    <p>
-      {{ doubled }}
-    </p>
-  </div>
+    <input v-model="text" />
 </template>
