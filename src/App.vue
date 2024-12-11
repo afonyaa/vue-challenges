@@ -1,38 +1,17 @@
 <script setup>
-import { ref, watchEffect, onUnmounted, onMounted } from 'vue';
+import { ref, provide } from "vue"
+import ChildComponent from "./components/ChildComponent.vue";
 
-const useEventListener = (target, event, callback) => {
-    onMounted(() => {
-        target.addEventListener(event, callback)
-    })
+const timer = ref(0)
+const count = ref(0)
 
-    onUnmounted(() => {
-        target.removeEventListener(event, callback)
-    })
-}
-
-const useMouse = () => {
-    const x = ref(0)
-    const y = ref(0)
-
-    const callback = (e) => {
-        y.value = e.clientY
-        x.value = e.clientX
-    }
-
-    useEventListener(window, 'mousemove', callback)
-
-    return {x, y}
-
-}
-
-const {x, y} = useMouse()
+provide("timer", timer)
+provide("count", count)
 
 </script>
 
 <template>
-{{ x }}
-{{ y }}
+    <ChildComponent/>
 </template>
 
 <style scoped>
