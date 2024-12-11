@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { shallowRef, watch } from "vue"
+import { provide, ref } from 'vue';
+import MyChild from './components/MyChild.vue';
 
-const state = shallowRef({ count: 1 })
+const count = ref('count')
+provide('count', count)
 
-// Does NOT trigger
-watch(state, () => {
-  console.log("State.count Updated")
-}, { deep: true })
-
-/**
- * Modify the code so that we can make the watch callback trigger.
-*/
-state.value = {count: 2}
-
+setTimeout(() => {
+  count.value = 'not count'
+}, 1000)
 </script>
 
 <template>
   <div>
-    {{ state.count }}
+    <MyChild />
   </div>
 </template>
