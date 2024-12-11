@@ -1,30 +1,48 @@
 <script setup>
 import { ref, watchEffect, onUnmounted, onMounted } from 'vue';
 
-
-const useToggle = (initialValue) => {
-    const state = ref(initialValue)
-    const toggle = () => {
-        console.log('toggle', state.value)
-        state.value = !state.value
+const useCounter = (initialValue, options) => {
+    const count = ref(initialValue)
+    
+    const dec = () => {
+        if (count.value > options.min) {
+            count.value--
+        }
     }
-    return {state, toggle}
+
+    const inc = () => {
+        if (count.value < options.max) {
+            console.log('inc')
+            count.value++
+        }
+    }
+    
+    const reset = () => {
+        count.value = initialValue
+    }
+
+    return {
+        inc, dec, reset, count
+    }
 }
 
-const {state, toggle} = useToggle(false)
+const { count, inc, dec, reset } = useCounter(0, { min: 0, max: 10 })
 
-watchEffect(() => {
-    console.log(state)
-})
 
 </script>
 
 <template>
-    <p>
-        State: {{ state ? 'ON': 'OFF' }}
-    </p>
-    <button @click="toggle">
-        Toggle state
+    <button @click="dec">
+        -
+    </button>
+    <div>
+        {{count}}
+    </div>
+    <button @click="inc">
+        +
+    </button>
+    <button @click="reset">
+        reset
     </button>
 </template>
 
