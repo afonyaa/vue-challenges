@@ -1,11 +1,26 @@
 <script setup>
-import { defineModel, ref} from "vue"
-import MyInput from "./components/MyInput.vue";
+import { ref, watch, watchEffect } from "vue"
 
-const val = ref('')
+const state = ref(false)
+
+/**
+ * Implement the custom directive
+ * Make sure the input element focuses/blurs when the 'state' is toggled
+ *
+*/
+
+const VFocus = {
+  updated: (el) => {
+    el.focus()
+  }
+}
+
+setInterval(() => {
+  state.value = !state.value
+}, 2000)
 
 </script>
 
 <template>
-  <MyInput v-model.capitalize="val" />
+    <input v-focus="state" type="text">
 </template>
