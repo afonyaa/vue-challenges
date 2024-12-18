@@ -1,26 +1,37 @@
 <script setup>
 import { ref, watch, watchEffect } from "vue"
 
-const state = ref(false)
-
 /**
- * Implement the custom directive
- * Make sure the input element focuses/blurs when the 'state' is toggled
+  * Implement the custom directive
+ * Make sure the `onClick` method only gets triggered once when clicked many times quickly
+ * And you also need to support the debounce delay time option. e.g `v-debounce-click:ms`
  *
 */
 
-const VFocus = {
-  updated: (el) => {
-    el.focus()
+const VDebounceClick = {
+  created(el, binding) {
+    let timeout
+
+    el.addEventListener('click', 
+      () => {
+        clearTimeout(timeout)  
+        timeout = setTimeout(() => {
+        binding.value()
+      }, binding.arg)
+      }
+    )
+
   }
 }
 
-setInterval(() => {
-  state.value = !state.value
-}, 2000)
+function onClick() {
+  console.log("Only triggered once when clicked many times quickly")
+}
 
 </script>
 
 <template>
-    <input v-focus="state" type="text">
+  <button v-debounce-click:200="onClick">
+    Click on it many times quickly
+  </button>
 </template>
