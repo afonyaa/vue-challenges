@@ -2,36 +2,53 @@
 import { ref, watch, watchEffect } from "vue"
 
 /**
-  * Implement the custom directive
- * Make sure the `onClick` method only gets triggered once when clicked many times quickly
- * And you also need to support the debounce delay time option. e.g `v-debounce-click:ms`
+ * Implement the custom directive
+ * Make sure the list item text color changes to red when the `toggleTab` is toggled
  *
 */
 
-const VDebounceClick = {
-  created(el, binding) {
-    let timeout
-
-    el.addEventListener('click', 
-      () => {
-        clearTimeout(timeout)  
-        timeout = setTimeout(() => {
-        binding.value()
-      }, binding.arg)
+const VActiveStyle = {
+  mounted(el, binding) {
+    const stylesOriginal = el.style
+    console.log(stylesOriginal)
+    watchEffect(()=> {
+      console.log(binding.value)
+      const [styles, condition] = binding.value
+      if (condition()) {
+        for (const styleProp of Object.keys(styles)) {
+          el.style[styleProp] = styles[styleProp]
+        }
       }
-    )
-
+      else {
+        for (const styleProp of Object.keys(styles)) {
+          console.log(stylesOriginal[styleProp])
+          el.style[styleProp] = ''
+        }
+      }
+    })
   }
 }
 
-function onClick() {
-  console.log("Only triggered once when clicked many times quickly")
+const list = [1, 2, 3, 4, 5, 6, 7, 8]
+
+const activeTab = ref(0)
+
+function toggleTab(index) {
+  activeTab.value = index
 }
+//todo реализовать без функции
 
 </script>
 
 <template>
-  <button v-debounce-click:200="onClick">
-    Click on it many times quickly
-  </button>
+ <ul>
+  <li
+      v-for="(item,index) in list"
+      :key="index"
+      v-active-style="[{'color':'red'}, () => activeTab === index]"
+      @click="toggleTab(index)"
+    >
+      {{ item }}
+    </li>
+ </ul>
 </template>
