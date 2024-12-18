@@ -1,16 +1,27 @@
 <script setup>
-import { ref, watch, watchEffect } from "vue"
+import { reactive, isReactive, toRaw, markRaw  } from "vue"
 
+const state = markRaw({ count: 1 })
+const reactiveState = reactive(state)
 
+/**
+ * Modify the code so that we can make the output be true.
+*/
+console.log(reactiveState === state)
+
+/**
+ * Modify the code so that we can make the output be false.
+*/
+const info = { count: 1 }
+const reactiveInfo = toRaw(reactive(info))
+
+console.log(isReactive(reactiveInfo))
 </script>
 
 <template>
-    <!-- Add key modifiers made this will fire even if Alt or Shift is also pressed -->
-<button @click.alt.shift="onClick1">A</button>
-
-<!-- Add key modifiers made this will only fire when Shift and no other keys are pressed -->
-<button @click.shift.exact="onCtrlClick">A</button>
-
-<!-- Add key modifiers made this will only fire when no system modifiers are pressed -->
-<button @click.exact="onClick2">A</button>
+   <div>
+    <p>
+      {{ reactiveState.count }}
+    </p>
+  </div>
 </template>
